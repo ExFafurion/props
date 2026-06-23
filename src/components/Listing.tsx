@@ -1,15 +1,11 @@
-// src/components/Listing.tsx
 import React from 'react';
 
-// ---- Типизация данных ----
-interface MainImage {
-  url_570xN: string;
-}
-
-interface Item {
+export interface Item {
   listing_id: number;
   url?: string;
-  MainImage?: MainImage;
+  MainImage?: {
+    url_570xN?: string;
+  };
   title: string;
   currency_code: string;
   price: string;
@@ -17,12 +13,10 @@ interface Item {
 }
 
 interface ListingProps {
-  items?: Item[]; // по умолчанию пустой массив
+  items?: Item[];
 }
 
-// ---- Компонент ----
 const Listing: React.FC<ListingProps> = ({ items = [] }) => {
-  // Форматирование цены
   const formatPrice = (price: string, currencyCode: string): string => {
     const numericPrice = parseFloat(price).toFixed(2);
     switch (currencyCode) {
@@ -33,19 +27,16 @@ const Listing: React.FC<ListingProps> = ({ items = [] }) => {
     }
   };
 
-  // Класс для остатка
   const getStockClass = (quantity: number): string => {
     if (quantity <= 10) return 'stock-low';
     if (quantity <= 20) return 'stock-medium';
     return 'stock-high';
   };
 
-  // Обрезка заголовка
   const truncateTitle = (title: string): string => {
     return title.length > 50 ? title.slice(0, 50) + '…' : title;
   };
 
-  // Фильтруем элементы, у которых есть MainImage и url_570xN
   const validItems = items.filter(
     (item): item is Item =>
       item.MainImage !== undefined && item.MainImage.url_570xN !== undefined
